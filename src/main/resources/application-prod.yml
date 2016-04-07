@@ -1,0 +1,42 @@
+server:
+    port: 9498
+
+
+#database
+spring:
+    datasource:
+        url: jdbc:mysql://127.0.0.1:3306/youke_xianxia_pay?useUnicode=true&characterEncoding=UTF-8
+        username: root
+        password: root$%^
+        driver-class-name: com.mysql.jdbc.Driver
+        name: mysql
+        validation-query: SELECT 1
+        test-on-borrow: true
+        max-active: 1000
+        max-idle: 30000
+        max-wait: 100
+        test-while-idle: true
+        time-between-eviction-runs-millis: 10000
+        min-evictable-idle-time-millis: 60000
+
+    jpa:
+        show-sql: false
+        generate-ddl: true
+        ddl-auto: update
+        database-platform: org.hibernate.dialect.MySQL5Dialect
+        hibernate:
+            naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
+
+    devtools:
+        restart:
+            enabled: false
+
+pay:
+    weixin:
+        key: xxx
+        appid: xx
+        mchid: xxx
+        app_secret: xx
+        notify_uri: xxx
+        authorize_redirect_uri: xxx
+        cert_password: xxx

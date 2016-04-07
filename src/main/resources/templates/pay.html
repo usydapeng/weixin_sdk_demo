@@ -1,0 +1,49 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head lang="zh-cn">
+	<meta charset="UTF-8"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="renderer" content="webkit"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>购买</title>
+</head>
+<body>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	function onBridgeReady(){
+		WeixinJSBridge.invoke(
+				'getBrandWCPayRequest', {
+					"appId": /*[[${paymentJsBean.appId}]]*/ '',
+					"timeStamp": /*[[${paymentJsBean.timeStamp}]]*/ '',
+					"nonceStr": /*[[${paymentJsBean.nonceStr}]]*/ '',
+					"package": /*[[${paymentJsBean.packagePrepayId}]]*/ '',
+					"signType": /*[[${paymentJsBean.signType}]]*/ '',
+					"paySign": /*[[${paymentJsBean.paySign}]]*/ ''
+				},
+				function(res){
+					if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+						alert("支付成功");
+					}
+					if(res.err_msg == "get_brand_wcpay_request:fail" ) {
+						alert("支付失败");
+					}
+				}
+		);
+	}
+
+	if (typeof WeixinJSBridge == "undefined"){
+		if( document.addEventListener ){
+			document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+		}else if (document.attachEvent){
+			document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+			document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+		}
+	}else{
+		onBridgeReady();
+	}
+	/*]]>*/
+</script>
+</body>
+</html>

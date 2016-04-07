@@ -1,0 +1,139 @@
+buildscript {
+	ext {
+		generatedSourcesDir = file("generated-sources/java")
+		springBootVersion = '1.3.3.RELEASE'
+		querydslVersion = '3.7.2'
+		shiroVersion = '1.2.4'
+	}
+	repositories {
+		mavenCentral()
+		jcenter()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+	}
+}
+
+apply plugin: 'application'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'war'
+apply plugin: 'spring-boot' 
+
+jar {
+	baseName = 'youke-weixin-pay'
+	manifest {
+		attributes 'Main-Class': 'com.oldpeng.YoukePayApplication'
+	}
+}
+
+war {
+	baseName = 'ROOT'
+}
+
+mainClassName = "com.oldpeng.YoukePayApplication"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+	mavenCentral()
+	jcenter()
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir "src/main/java"
+			srcDir generatedSourcesDir
+		}
+	}
+}
+
+configurations {
+	querydslapt
+	providedRuntime
+	provided
+}
+
+task generateQueryDSL(type: JavaCompile, group: 'build', description: 'Generates the QueryDSL query types') {
+	source = sourceSets.main.java
+	classpath = configurations.compile + configurations.querydslapt
+	options.compilerArgs = [
+			"-proc:only",
+			"-processor", "com.mysema.query.apt.jpa.JPAAnnotationProcessor"
+	]
+	destinationDir = generatedSourcesDir
+}
+
+compileJava {
+	doFirst {
+		generatedSourcesDir.mkdirs();
+	}
+	options.compilerArgs += ['-s', generatedSourcesDir]
+
+	dependsOn generateQueryDSL
+}
+
+bootRun {
+	addResources = true
+}
+
+dependencies {
+	compile("org.springframework.boot:spring-boot-starter")
+	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("org.springframework.boot:spring-boot-starter-data-rest")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("org.springframework.boot:spring-boot-starter-jdbc")
+    compile("org.springframework.boot:spring-boot-starter-aop")
+	compile("org.springframework.boot:spring-boot-starter-redis")
+    compile("org.springframework.boot:spring-boot-devtools")
+	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+
+	compile("com.mysema.querydsl:querydsl-core:$querydslVersion")
+	compile("com.mysema.querydsl:querydsl-jpa:$querydslVersion")
+	querydslapt("com.mysema.querydsl:querydsl-apt:$querydslVersion")
+	compile("mysql:mysql-connector-java:5.1.38")
+
+	compile("org.apache.shiro:shiro-core:$shiroVersion")
+	compile("org.apache.shiro:shiro-web:$shiroVersion")
+	compile("org.apache.shiro:shiro-aspectj:$shiroVersion")
+	compile("org.apache.shiro:shiro-cas:$shiroVersion")
+	compile("org.apache.shiro:shiro-ehcache:$shiroVersion")
+	compile("org.apache.shiro:shiro-spring:$shiroVersion")
+
+	compile("com.alibaba:fastjson:1.2.7")
+	compile("com.thoughtworks.xstream:xstream:1.4.8")
+	compile("org.codehaus.jettison:jettison:1.3.7")
+	compile("commons-codec:commons-codec:1.10")
+	compile("commons-io:commons-io:2.4")
+	compile("com.squareup.okhttp:okhttp:2.7.2")
+	compile("com.squareup.okhttp3:okhttp:3.0.1")
+	compile("joda-time:joda-time:2.9.1")
+	compile("commons-lang:commons-lang:2.6")
+	compile("org.jsoup:jsoup:1.8.3")
+	compile("redis.clients:jedis:2.6.3")
+
+	compile("org.apache.httpcomponents:httpclient:4.4")
+	compile("org.apache.httpcomponents:httpmime:4.4")
+
+	compile("com.google.zxing:core:3.2.1")
+
+	compile("com.oldpeng.weixin:weixin_sdk:2.1.4")
+
+	testCompile("org.springframework.boot:spring-boot-starter-test")
+	testCompile("com.squareup.okhttp3:mockwebserver:3.0.1")
+}
+
+
+eclipse {
+	classpath {
+		 containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+		 containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7'
+	}
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.9'
+}
