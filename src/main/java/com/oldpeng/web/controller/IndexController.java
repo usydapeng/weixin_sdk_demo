@@ -18,7 +18,8 @@ import javax.servlet.http.HttpServletRequest;
  * Created by dapeng on 16/4/6.
  */
 @Controller
-@RequestMapping("/texun")
+//@RequestMapping("/texun")
+@RequestMapping("/neibu")
 public class IndexController {
 
 	private static Logger logger = LoggerFactory.getLogger(IndexController.class);
